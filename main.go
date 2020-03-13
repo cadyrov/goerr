@@ -1,4 +1,4 @@
-package errs
+package goerr
 
 import (
 	"fmt"
