@@ -17,7 +17,7 @@ type IError interface {
 type appError struct {
 	code    int
 	Message string   `json:"message"`
-	Detail  []IError `json:"detail"`
+	Detail  []IError `json:"detail,omitempty"`
 }
 
 func (e *appError) PushDetail(ae IError) {
