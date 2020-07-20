@@ -14,17 +14,17 @@ type IError interface {
 	Http(code int) IError
 }
 
-type appError struct {
+type AppError struct {
 	code    int
 	Message string   `json:"message"`
 	Detail  []IError `json:"detail,omitempty"`
 }
 
-func (e *appError) PushDetail(ae IError) {
+func (e *AppError) PushDetail(ae IError) {
 	e.Detail = append(e.Detail, ae)
 }
 
-func (e *appError) Error() (er string) {
+func (e *AppError) Error() (er string) {
 	er += fmt.Sprintf("Code: %v; ", e.code)
 	er += "Msg: " + e.Message + ";  "
 	if len(e.GetDetails()) == 0 {
@@ -38,24 +38,24 @@ func (e *appError) Error() (er string) {
 	return
 }
 
-func (e *appError) GetCode() int {
+func (e *AppError) GetCode() int {
 	return e.code
 }
 
-func (e *appError) GetMessage() string {
+func (e *AppError) GetMessage() string {
 	return e.Message
 }
 
-func (e *appError) GetDetails() []IError {
+func (e *AppError) GetDetails() []IError {
 	return e.Detail
 }
 
-func (e *appError) Http(code int) IError {
+func (e *AppError) Http(code int) IError {
 	e.code = code
 	return e
 }
 
 func New(message string) (e IError) {
-	e = &appError{code: http.StatusInternalServerError, Message: message}
+	e = &AppError{code: http.StatusInternalServerError, Message: message}
 	return
 }
