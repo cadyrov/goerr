@@ -11,7 +11,7 @@ type IError interface {
 	GetDetails() []IError
 	PushDetail(IError)
 	GetMessage() string
-	Http(code int) IError
+	HTTP(code int) IError
 }
 
 type AppError struct {
@@ -26,16 +26,22 @@ func (e *AppError) PushDetail(ae IError) {
 
 func (e *AppError) Error() (er string) {
 	er += fmt.Sprintf("Code: %v; ", e.Code)
+
 	er += "Msg: " + e.Message + ";  "
+
 	if len(e.GetDetails()) == 0 {
 		return
 	}
+
 	er += " Details: {"
+
 	for idx := range e.GetDetails() {
 		er += e.GetDetails()[idx].Error()
 	}
+
 	er += "}"
-	return
+
+	return er
 }
 
 func (e *AppError) GetCode() int {
@@ -50,12 +56,14 @@ func (e *AppError) GetDetails() []IError {
 	return e.Detail
 }
 
-func (e *AppError) Http(code int) IError {
+func (e *AppError) HTTP(code int) IError {
 	e.Code = code
+
 	return e
 }
 
-func New(message string) (e IError) {
-	e = &AppError{Code: http.StatusInternalServerError, Message: message}
-	return
+func New(message string) IError {
+	e := &AppError{Code: http.StatusInternalServerError, Message: message}
+
+	return e
 }
