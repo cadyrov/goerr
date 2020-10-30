@@ -12,16 +12,22 @@ type IError interface {
 	PushDetail(IError)
 	GetMessage() string
 	HTTP(code int) IError
+	SetID(string)
 }
 
 type AppError struct {
 	Code    int      `json:"code"`
 	Message string   `json:"message"`
 	Detail  []IError `json:"detail,omitempty"`
+	ID      string   `json:"id,omitempty"`
 }
 
 func (e *AppError) PushDetail(ae IError) {
 	e.Detail = append(e.Detail, ae)
+}
+
+func (e *AppError) SetID(name string) {
+	e.ID = name
 }
 
 func (e *AppError) Error() (er string) {
