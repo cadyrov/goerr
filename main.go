@@ -13,6 +13,7 @@ type IError interface {
 	GetMessage() string
 	HTTP(code int) IError
 	SetID(string)
+	GetID() string
 }
 
 type AppError struct {
@@ -28,6 +29,10 @@ func (e *AppError) PushDetail(ae IError) {
 
 func (e *AppError) SetID(name string) {
 	e.ID = name
+}
+
+func (e *AppError) GetID() string {
+	return e.ID
 }
 
 func (e *AppError) Error() (er string) {
