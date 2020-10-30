@@ -12,7 +12,7 @@ type IError interface {
 	PushDetail(IError)
 	GetMessage() string
 	HTTP(code int) IError
-	SetID(string)
+	SetID(string) IError
 	GetID() string
 }
 
@@ -27,8 +27,9 @@ func (e *AppError) PushDetail(ae IError) {
 	e.Detail = append(e.Detail, ae)
 }
 
-func (e *AppError) SetID(name string) {
+func (e *AppError) SetID(name string) IError {
 	e.ID = name
+	return e
 }
 
 func (e *AppError) GetID() string {
