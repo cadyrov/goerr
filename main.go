@@ -8,7 +8,7 @@ import (
 type IError interface {
 	Error() string
 	GetCode() int
-	GetDetails() []IError
+	Details() []IError
 	PushDetail(IError)
 	GetMessage() string
 	HTTP(code int) IError
@@ -41,14 +41,14 @@ func (e *AppError) Error() (er string) {
 
 	er += "Msg: " + e.Message + ";  "
 
-	if len(e.GetDetails()) == 0 {
+	if len(e.Details()) == 0 {
 		return
 	}
 
 	er += " Details: {"
 
-	for idx := range e.GetDetails() {
-		er += e.GetDetails()[idx].Error()
+	for idx := range e.Details() {
+		er += e.Details()[idx].Error()
 	}
 
 	er += "}"
@@ -64,7 +64,7 @@ func (e *AppError) GetMessage() string {
 	return e.Message
 }
 
-func (e *AppError) GetDetails() []IError {
+func (e *AppError) Details() []IError {
 	return e.Detail
 }
 
@@ -79,3 +79,36 @@ func New(message string) IError {
 
 	return e
 }
+
+func BadRequest(message string) IError {
+	return New(message).HTTP(http.StatusBadRequest)
+}
+
+func Unauthorized(message string) IError {
+	return New(message).HTTP(http.StatusUnauthorized)
+}
+
+func Forbidden(message string) IError {
+	return New(message).HTTP(http.StatusForbidden)
+}
+
+func NotFound(message string) IError {
+	return New(message).HTTP(http.StatusNotFound)
+}
+
+func NotAcceptable(message string) IError {
+	return New(message).HTTP(http.StatusNotAcceptable)
+}
+
+func Conflict(message string) IError {
+	return New(message).HTTP(http.StatusConflict)
+}
+
+func Unprocessable(message string) IError {
+	return New(message).HTTP(http.StatusUnprocessableEntity)
+}
+
+
+
+
+
