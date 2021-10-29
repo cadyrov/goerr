@@ -8,7 +8,7 @@ import (
 type IError interface {
 	Error() string
 	GetCode() int
-	Details() []IError
+	GetDetails() []IError
 	PushDetail(IError)
 	GetMessage() string
 	HTTP(code int) IError
@@ -41,14 +41,14 @@ func (e *AppError) Error() (er string) {
 
 	er += "Msg: " + e.Message + ";  "
 
-	if len(e.Details()) == 0 {
+	if len(e.GetDetails()) == 0 {
 		return
 	}
 
 	er += " Details: {"
 
-	for idx := range e.Details() {
-		er += e.Details()[idx].Error()
+	for idx := range e.GetDetails() {
+		er += e.GetDetails()[idx].Error()
 	}
 
 	er += "}"
@@ -64,7 +64,7 @@ func (e *AppError) GetMessage() string {
 	return e.Message
 }
 
-func (e *AppError) Details() []IError {
+func (e *AppError) GetDetails() []IError {
 	return e.Detail
 }
 
@@ -74,40 +74,50 @@ func (e *AppError) HTTP(code int) IError {
 	return e
 }
 
+// deprecated
 func New(message string) IError {
 	e := &AppError{Code: http.StatusInternalServerError, Message: message}
 
 	return e
 }
 
+func create(message string) IError {
+	e := &AppError{Code: http.StatusInternalServerError, Message: message}
+
+	return e
+}
+
 func BadRequest(message string) IError {
-	return New(message).HTTP(http.StatusBadRequest)
+	return create(message).HTTP(http.StatusBadRequest)
 }
 
 func Unauthorized(message string) IError {
-	return New(message).HTTP(http.StatusUnauthorized)
+	return create(message).HTTP(http.StatusUnauthorized)
 }
 
 func Forbidden(message string) IError {
-	return New(message).HTTP(http.StatusForbidden)
+	return create(message).HTTP(http.StatusForbidden)
 }
 
 func NotFound(message string) IError {
-	return New(message).HTTP(http.StatusNotFound)
+	return create(message).HTTP(http.StatusNotFound)
 }
 
 func NotAcceptable(message string) IError {
-	return New(message).HTTP(http.StatusNotAcceptable)
+	return create(message).HTTP(http.StatusNotAcceptable)
 }
 
 func Conflict(message string) IError {
-	return New(message).HTTP(http.StatusConflict)
+	return create(message).HTTP(http.StatusConflict)
 }
 
 func Unprocessable(message string) IError {
-	return New(message).HTTP(http.StatusUnprocessableEntity)
+	return create(message).HTTP(http.StatusUnprocessableEntity)
 }
 
+func Internal(message string) IError {
+	return create(message).HTTP(http.StatusInternalServerError)
+}
 
 
 
